@@ -11,6 +11,9 @@
     "react-scripts": "3.0.0",
     "tachyons": "^4.11.1"
   },
+  "engines": {
+    "node": "10.3.0"
+  },
   "scripts": {
     "start": "node server.js",
     "build": "react-scripts build",
