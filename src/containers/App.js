@@ -6,43 +6,36 @@ import Scroll from '../components/Scroll';
 import ErrorBoundary from '../components/ErrorBoundary';
 import './App.css';
 
-import { setSearchField } from '../actions';
+import { setSearchField, requestArtists } from '../actions';
 
 const mapStateToProps = state => {
     return {
-        searchField: state.searchField
+        searchField: state.searchArtists.searchField,
+        artists: state.requestArtists.artists,
+        isPending: state.requestArtists.isPending,
+        error: state.requestArtists.error
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onSearchChange: (event) => dispatch(setSearchField(event.target.value))
+        onSearchChange: (event) => dispatch(setSearchField(event.target.value)),
+        onRequestArtists: () => dispatch(requestArtists())
     }
 }
 
 class App extends Component {
-    constructor() {
-        super()
-        this.state = {
-            artists: []
-        }
-    }
 
     componentDidMount(){
-        fetch('https://picsum.photos/v2/list?page=2&limit=30')
-        .then(response => response.json())
-        .then(artists => {
-            this.setState({ artists: artists });
-        });
+        this.props.onRequestArtists();
     }
 
     render() {
-        const { artists } = this.state;
-        const { searchField, onSearchChange } = this.props;
+        const { searchField, onSearchChange, artists, isPending } = this.props;
         const filteredArtists = artists.filter(artist => {
             return artist.author.toLowerCase().includes(searchField.toLowerCase());
         });
-        return !artists.length ?
+        return isPending ?
         <h1>Loading...</h1> :
         (
             <div className='tc'>
